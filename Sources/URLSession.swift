@@ -2,10 +2,22 @@ import Foundation
 
 extension URLSession {
     func synchronousDataTask(with url: URL) -> (Data?, URLResponse?, Error?) {
-        URLSession.shared.dataTask(with: url) {
-            data, response, error in
+        let semaphore = DispatchSemaphore(value: 0)
 
-        }
-        return (nil, nil, nil)
+        var data: Data?
+        var response: URLResponse?
+        var error: Error?
+
+        dataTask(with: url) {
+            data = $0
+            response = $1
+            error = $2
+
+            semaphore.signal()
+        }.resume()
+
+        semaphore.wait()
+
+        return (data, response, error)
     }
 }

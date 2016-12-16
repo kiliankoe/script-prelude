@@ -8,8 +8,11 @@ class URLSessionTests: XCTestCase {
             return
         }
 
-        let response = URLSession.shared.synchronousDataTask(with: url)
-        XCTAssertEqual(response.0, nil)
+        guard let response = (URLSession.shared.synchronousDataTask(with: url).1 as? HTTPURLResponse) else {
+            XCTFail("failed on getting response")
+            return
+        }
+        XCTAssertEqual(response.statusCode, 200)
     }
 
     static var allTests: [(String, (URLSessionTests) -> () throws -> Void)] {
