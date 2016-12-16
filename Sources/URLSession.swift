@@ -51,4 +51,52 @@ extension URLSession {
         return (data, response, error)
     }
 
+    /// Retrieve the contents of the specified URL via a GET request with optional headers.
+    ///
+    /// - Parameters:
+    ///   - url: URL to be retrieved
+    ///   - headers: optional headers to be set
+    /// - Returns: raw data and URLResponse
+    /// - Throws: any occurring error
+    public func get(_ url: URL, headers: [String: String]? = nil) throws -> (Data?, URLResponse?) {
+        var request = URLRequest(url: url)
+
+        if let headers = headers {
+            for (header, value) in headers {
+                request.addValue(value, forHTTPHeaderField: header)
+            }
+        }
+
+        let response = synchronousDataTask(with: request)
+        if let error = response.2 {
+            throw error
+        }
+        return (response.0, response.1)
+    }
+
+    /// Retrieve the contents of the specified URL via a POST request with optional headers.
+    ///
+    /// - Parameters:
+    ///   - url: URL to be retrieved
+    ///   - body: body to be sent as formurlencoded data
+    ///   - headers: optional headers to be set
+    /// - Returns: raw data and URLResponse
+    /// - Throws: any occurring error
+    public func post(_ url: URL, body: Data?, headers: [String: String]? = nil) throws -> (Data?, URLResponse?) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = body
+
+        if let headers = headers {
+            for (header, value) in headers {
+                request.addValue(value, forHTTPHeaderField: header)
+            }
+        }
+
+        let response = synchronousDataTask(with: request)
+        if let error = response.2 {
+            throw error
+        }
+        return (response.0, response.1)
+    }
 }
