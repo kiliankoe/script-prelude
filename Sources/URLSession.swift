@@ -1,7 +1,12 @@
 import Foundation
 
 extension URLSession {
-    func synchronousDataTask(with url: URL) -> (Data?, URLResponse?, Error?) {
+    /// Retrieves the contents of the specified URL, waiting for the request to be
+    /// completed before returning the results directly.
+    ///
+    /// - Parameter url: URL to be retrieved
+    /// - Returns: optional raw data, response and error objects
+    public func synchronousDataTask(with url: URL) -> (Data?, URLResponse?, Error?) {
         let semaphore = DispatchSemaphore(value: 0)
 
         var data: Data?
